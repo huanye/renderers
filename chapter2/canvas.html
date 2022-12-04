@@ -9,9 +9,39 @@
 			}
 		</style>
 		<script>
+			var canvas;
+			var canvas_context;
+			var canvas_buffer;
+			var canvas_pitch;
 			window.onload = function(){
-				var canvas = document.getElementById("balls");
-				var context = canvas.getContext("2d");
+				canvas = document.getElementById("balls");
+				canvas_context = canvas.getContext("2d");
+				canvas_buffer = canvas_context.getImageData(0,0,canvas.width, canvas.height);
+				canvas_pitch = canvas_buffer.width*4;
+			};
+
+			var PutPixel = function(x,y,color){
+				x = canvas.width/2+x;
+				y = canvas.height/2-y-1;
+			        if( x < 0 || x >= canvas.width || y<0 || y>= canvas.height){return;}
+                                var offset = 4*x + canvas_pitch*y;
+				canvas_buffer.data[offset++] = color[0];
+				canvas_buffer.data[offset++] = color[1];
+				canvas_buffer.data[offset++] = color[2];
+				canvas_buffer.data[offset++] = 255;//full opacity
+
+			};
+
+
+			var UpdateCanvas = function(){
+				canvas_context.putImageData(canvas_buffer,0,0);
+			}; 
+			// linear algebra helpers.
+			var Dot = function(v1,v2){
+				return v1[0]*v2[0] + v1[1]*v2[1]+v1[2]*v2[2];
+			};
+			var Subtract = function(v1,v2){
+				return [v1[0]-v2[0],v1[1]-v2[1],v1[2]-v2[2]];
 			};
 		</script>
 	</head>
