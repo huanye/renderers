@@ -18,21 +18,15 @@
 			var Vy = 1;
 			var depth = 1;
 			var O = [0,0,0];
-			var sphere1 = {
-				center:[0, -1, 3],
-				radius:1,
-				color:[255, 0, 0]
-			};
-			var sphere2 = {
-				center:[2, 0, 4],
-				radius:1,
-				color:[0, 0, 255]
-			};
-			var sphere3 = {
-				center:[-2, 0, 4],
-				radius:1,
-				color:[0, 255, 0]
-			};
+			// create an object constructor for spheres
+			function Sphere(center,radius,color){
+				this.center = center;
+				this.radius = radius;
+				this.color = color;
+			}
+			var sphere1 = new Sphere([0,-1,3],1,[255,0,0]);
+			var sphere2 = new Sphere([2,0,4],1,[0,0,255]);
+			var sphere3 = new Sphere([-2,0,4],1,[0,255,0]);
 			var spheres = [sphere1, sphere2, sphere3];
 
 			var PutPixel = function(x,y,color){
