@@ -9,17 +9,19 @@ window.onload = function(){
 	var O = [0,0,0];
 
 	// create an object constructor for spheres
-	function Sphere(center,radius,color){
+	function Sphere(center,radius,color,specular){
 		this.center = center;
 		this.radius = radius;
 		this.color = color;
+		//add specular for the ball
+		this.specular = specular;
 	}
 	
-	var sphere1 = new Sphere([0,-1,3],1,[255,0,0]);
-	var sphere2 = new Sphere([2,0,4],1,[0,0,255]);
-	var sphere3 = new Sphere([-2,0,4],1,[0,255,0]);
+	var sphere1 = new Sphere([0,-1,3],1,[255,0,0],500);
+	var sphere2 = new Sphere([2,0,4],1,[0,0,255], 500);
+	var sphere3 = new Sphere([-2,0,4],1,[0,255,0],10);
 	//add a big yellow sphere
-	var sphere4 = new Sphere([0,-5001,0],5000,[255,255,0]);
+	var sphere4 = new Sphere([0,-5001,0],5000,[255,255,0],1000);
    
 	var spheres = [sphere1, sphere2, sphere3,sphere4];
         
@@ -102,7 +104,7 @@ window.onload = function(){
 	};
 
 	//compute light intensity given several types of light source
-	var ComputeLighting= function(P,N){
+	var ComputeLighting= function(P,N,V,s){
 		var intensity = 0.0;
 		var light_direction = null;
 		for(var i=0; i<lights.length;i++){
@@ -117,13 +119,27 @@ window.onload = function(){
 					// directional light source
 					light_direction = lights[i].direction;
 				}
+				// add the effect of diffuse reflection
 				var n_dot_l = Dot(N,light_direction);
 				if(n_dot_l>0){
 					intensity += lights[i].intensity*n_dot_l/(Vlength(N)*Vlength(light_direction));
 				}
+				// add the effect of specular reflection
+				if(lights[i].specular!=-1){
+
+					var R = Subtract(Smul(2*n_dot_l,N),light_direction); 
+					var r_dot_v = Dot(R,V);
+					if(r_dot_v>0){
+						intensity += lights[i].intensity*Math.pow(Dot(R,V)/(Vlength(R)*Vlength(V)),s);
+					}
+				}
 			}
 		}
+		if(intensity>=1.0){
+			return 1.0;
+		}else{
 		return intensity;
+		}
 	};
 
 	// Raytracing function
@@ -150,11 +166,12 @@ window.onload = function(){
 				return [255,255,255];
 		}
 		// compute the intersection point on the closest sphere
-		P = Add(O, Smul(closest_t,D));
+		var P = Add(O, Smul(closest_t,D));
 		// computer sphere normal at intersection
-		N = Subtract(P, closest_sphere.center);
+		var N = Subtract(P, closest_sphere.center);
 		N = Sdiv(N,Vlength(N));
-		return Smul(ComputeLighting(P,N),closest_sphere.color);
+		var V = Subtract(O,P);
+		return Smul(ComputeLighting(P,N,V,closest_sphere.specular),closest_sphere.color);
 	};
 
 	//let us do the raytracing
