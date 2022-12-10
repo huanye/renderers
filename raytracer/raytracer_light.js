@@ -20,10 +20,10 @@ window.onload = function(){
 	var sphere3 = new Sphere([-2,0,4],1,[0,255,0]);
 	//add a big yellow sphere
 	var sphere4 = new Sphere([0,-5001,0],5000,[255,255,0]);
-
+   
 	var spheres = [sphere1, sphere2, sphere3,sphere4];
-
-        // create an object constructor for lights
+        
+	// create an object constructor for lights
 	function Light(type,intensity,position,direction){
 		this.type = type;
 		this.intensity = intensity;
@@ -123,7 +123,6 @@ window.onload = function(){
 				}
 			}
 		}
-		console.log(intensity);
 		return intensity;
 	};
 
