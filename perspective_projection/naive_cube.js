@@ -43,7 +43,6 @@
 					values.push(d);
 					d = d + a;
 				}
-				console.log(values);
 				return values;
 			};
 
@@ -58,7 +57,6 @@
 						P0 = tmp;
 					}
 					var ys = Interpolate(P0.x, P0.y, P1.x, P1.y);
-					console.log(ys);
 					for (var x=P0.x;x<=P1.x;x++){
 						PutPixel(x, ys[x-P0.x],color);
 
